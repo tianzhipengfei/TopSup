@@ -1,4 +1,6 @@
 tessdata
+.DS_Store
+common/.DS_Store
 .idea
 /config/configure.conf
 test.py
