@@ -10,6 +10,8 @@ from common import screenshot, ocr, methods
 from threading import Thread
 import time
 import configparser
+import re
+import os
 
 # 读取配置文件
 config = configparser.ConfigParser()
@@ -17,12 +19,13 @@ config.read('./config/configure.conf', encoding='utf-8')
 
 
 while True:
+    os.system("clear")
     # 截图
-    t = time.clock()
+    t = time.perf_counter()
     screenshot.check_screenshot()
 
-    #end_time = time.clock()
-    #print(end_time - t)
+    # end_time1 = time.perf_counter()
+    # print("save screenshot: {0}".format(end_time1 - t))
 
     img = Image.open("./screenshot.png")
 
@@ -33,11 +36,16 @@ while True:
     #ocr_img_baidu： 题目和选项一起截，使用 baidu ocr，需配置 key
     
     # question, choices = ocr.ocr_img(img, config)
-    question, choices = ocr.ocr_img_tess(img, config)
-    # question, choices = ocr.ocr_img_baidu(img, config)
+    # question, choices = ocr.ocr_img_tess(img, config)
+    question, choices = ocr.ocr_img_baidu(img, config)
 
-    #end_time2 = time.clock()
-    #print(end_time2 - end_time)
+    # 去除问题前的数字和.
+    question = re.sub(r"\b\d*\.?(\w*)", r"\1", question)
+    print("Q: " + question)
+    print(choices)
+
+    # end_time2 = time.perf_counter()
+    # print("ocr: {0}".format(end_time2 - end_time1))
 
     # 用不同方法输出结果，取消某个方法在前面加上#
 
@@ -56,11 +64,10 @@ while True:
     m2.start()
     m3.start()
 
-    end_time3 = time.clock()
-    print('用时: {0}'.format(end_time3 - t))
+    end_time3 = time.perf_counter()
+    print('\n用时: {0}\n'.format(end_time3 - t))
 
     go = input('输入回车继续运行,输入 n 回车结束运行: ')
     if go == 'n':
         break
-
-    print('------------------------')
+    # print('------------------------')

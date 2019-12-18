@@ -108,6 +108,13 @@ def ocr_img(image, config):
     #     choices.pop(0)
     #     choices.pop(0)
 
+    
+    question = "".join(question.split('.',1)[1].split(" "))
+    temp = []
+    for choice in choices:
+        temp.append("".join(choice.split(" ")))
+    choices = temp
+
     return question, choices
 
 def ocr_img_tess(image, config):
@@ -139,10 +146,13 @@ def ocr_img_tess(image, config):
     region_text = pytesseract.image_to_string(region_im, lang='chi_sim', config=tessdata_dir_config)
     region_text = region_text.replace("_", "一").split("\n")
     texts = [x for x in region_text if x != '']
-    #print(texts)
     if len(texts) > 2:
         question = texts[0]
         choices = texts[1:]
+        temp = []
+        for choice in choices:
+            temp.append("".join(choice.split(" ")))
+        choices = temp
     else:
         print(Fore.RED + '截图区域设置错误，请重新设置' + Fore.RESET)
         exit(0)
@@ -157,6 +167,7 @@ def ocr_img_tess(image, config):
         choices.pop(0)
         choices.pop(0)
 
+
     return question, choices
 
 def ocr_img_baidu(image, config):
@@ -168,7 +179,6 @@ def ocr_img_baidu(image, config):
 
     client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
 
-    global combine_region
     # 切割题目+选项区域，左上角坐标和右下角坐标,自行测试分辨率
     combine_region = config.get("region", "combine_region").replace(' ','').split(',')
     combine_region = list(map(int, combine_region))
@@ -184,11 +194,9 @@ def ocr_img_baidu(image, config):
     image_data = img_byte_arr.getvalue()
     # base64_data = base64.b64encode(image_data)
     response = client.basicGeneral(image_data)
-    #print(response)
     words_result = response['words_result']
 
     texts = [x['words'] for x in words_result]
-    # print(texts)
     if len(texts) > 2:
         question = texts[0]
         choices = texts[1:]
@@ -212,13 +220,7 @@ def ocr_img_baidu(image, config):
 
 if __name__ == '__main__':
     image = Image.open("../screenshot.png")
-    # question, choices = ocr_img(image)
-    # print("Tess 识别结果:")
-    # print(question)
-    # print(choices)
-    # print()
 
     question, choices = ocr_img_baidu(image)
-    print("baidu 识别结果:")
     print(question)
     print(choices)

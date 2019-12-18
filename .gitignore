@@ -1,5 +1,6 @@
 tessdata
 .idea
+/config/configure.conf
 test.py
 ./screenshot.png
 *.py[cod]

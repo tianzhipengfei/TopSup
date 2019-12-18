@@ -36,6 +36,7 @@ choices_im = image.crop((100, 820, 1200, 1670))
 # 冲顶大会\百万英雄
 question_im = image.crop((50, 250, 700, 520))
 choices_im = image.crop((50, 520, 700, 880))
+
 # 芝士超人
 question_im = image.crop((50, 150, 730, 350))
 choices_im = image.crop((40, 360, 730, 750))
